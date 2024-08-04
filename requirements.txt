@@ -2,3 +2,4 @@ Flask
 # pymongo
 flask-socketio
 # gevent
+flask-cors
