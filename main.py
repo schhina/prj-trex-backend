@@ -16,7 +16,7 @@ socketio = SocketIO(app, cors_allowed_origins=["http://127.0.0.1:3000", "http://
 def generate_response(data, status_code=200):
     res = make_response(data)
     res.status = status_code
-    res.headers['Access-Control-Allow-Origin'] = "https://master.d1w0j5t2vbp7ry.amplifyapp.com/"
+    res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
     res.headers['Access-Control-Allow-Credentials'] = "true"
     return res
 
