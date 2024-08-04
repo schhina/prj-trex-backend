@@ -1,5 +1,6 @@
 Flask
 # pymongo
 flask-socketio
+werkzeug
 # gevent
 # flask-cors
