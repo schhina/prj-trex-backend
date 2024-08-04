@@ -6,30 +6,33 @@ from flask_socketio import SocketIO
 import asyncio
 from time import sleep
 from threading import Thread
+from flask_cors import CORS
+
 
 maxStars = 100
 stars = [Star.generateRandomStar() for i in range(100)]
 
 app = Flask(__name__)
+CORS(app)
 socketio = SocketIO(app)
 
-def _build_cors_preflight_response():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response
+# def _build_cors_preflight_response():
+#     response = make_response()
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+#     response.headers.add('Access-Control-Allow-Headers', "*")
+#     response.headers.add('Access-Control-Allow-Methods', "*")
+#     return response
 
-def _corsify_actual_response(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
+# def _corsify_actual_response(response):
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+#     return response
 
 def generate_response(data, status_code=200):
     res = make_response(data)
     res.status = status_code
-    res = _corsify_actual_response(res)
+    # res = _corsify_actual_response(res)
     # res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
-    res.headers['Access-Control-Allow-Credentials'] = "true"
+    # res.headers['Access-Control-Allow-Credentials'] = "true"
     return res
 
 @app.route("/")
@@ -37,10 +40,10 @@ def hello_world():
     print("here")
     return "<p>Hello, World!</p>"
 
-@app.route("/refresh", methods=["GET", "OPTIONS"])
+@app.route("/refresh", methods=["GET"])
 def refresh():
-    if request.method == "OPTIONS": # CORS preflight
-        return _build_cors_preflight_response()
+    # if request.method == "OPTIONS": # CORS preflight
+    #     return _build_cors_preflight_response()
     # global stars
     # stars = [Star.generateRandomStar() for i in range(100)]
     socketio.emit("stars", ", ".join([f"{Star.generateRandomStar()}" for i in range(100)]))
