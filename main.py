@@ -59,6 +59,10 @@ def add_star():
     socketio.emit("star", f"{star}")
     return generate_response("OK", 200)
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return generate_response("OK")
+
 def sstarLoop():
     while True:
         # print("sending star")
