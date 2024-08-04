@@ -81,5 +81,5 @@ def refresh(data):
 if __name__ == "__main__":
     # sStarLoopThread = Thread(target=sstarLoop)
     # sStarLoopThread.start()
-    socketio.run(app, port=5000, debug=True, ssl_context=('cert.pem', 'key.pem'))
+    socketio.run(app, port=5000, debug=True) # , ssl_context=('cert.pem', 'key.pem')
     # sStarLoopThread.join()
