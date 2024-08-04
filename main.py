@@ -17,6 +17,7 @@ def generate_response(data, status_code=200):
     res = make_response(data)
     res.status = status_code
     res.headers['Access-Control-Allow-Origin'] = "*"
+    print(res.headers)
     # res.headers['Access-Control-Allow-Credentials'] = "false"
     return res
 
@@ -29,7 +30,9 @@ def hello_world():
 def refresh():
     global stars
     stars = [Star.generateRandomStar() for i in range(100)]
+    print("got stars")
     socketio.emit("stars", ", ".join([f"{star}" for star in stars]))
+    print("done with socketio")
     return generate_response("OK", 200)
 
 @app.route("/get/stars")
