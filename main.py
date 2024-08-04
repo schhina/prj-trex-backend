@@ -11,12 +11,24 @@ maxStars = 100
 stars = [Star.generateRandomStar() for i in range(100)]
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins=["http://127.0.0.1:3000", "http://localhost:3000", "https://master.d1w0j5t2vbp7ry.amplifyapp.com/"])
+socketio = SocketIO(app)
+
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 def generate_response(data, status_code=200):
     res = make_response(data)
     res.status = status_code
-    res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
+    res = _corsify_actual_response(res)
+    # res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
     res.headers['Access-Control-Allow-Credentials'] = "true"
     return res
 
@@ -25,21 +37,23 @@ def hello_world():
     print("here")
     return "<p>Hello, World!</p>"
 
-@app.route("/refresh")
+@app.route("/refresh", methods=["GET", "OPTIONS"])
 def refresh():
-    global stars
-    stars = [Star.generateRandomStar() for i in range(100)]
-    socketio.emit("stars", ", ".join([f"{star}" for star in stars]))
+    if request.method == "OPTIONS": # CORS preflight
+        return _build_cors_preflight_response()
+    # global stars
+    # stars = [Star.generateRandomStar() for i in range(100)]
+    socketio.emit("stars", ", ".join([f"{Star.generateRandomStar()}" for i in range(100)]))
     return generate_response("OK", 200)
 
-@app.route("/get/stars")
-def get_stars():
-    return generate_response(", ".join(stars))
+# @app.route("/get/stars")
+# def get_stars():
+#     return generate_response(", ".join(stars))
 
-@app.route("/get/sstar")
-def get_sstar():
-    socketio.emit("sstar", f"{ShootingStar.generateRandomSStar()}")
-    return generate_response("OK")
+# @app.route("/get/sstar")
+# def get_sstar():
+#     socketio.emit("sstar", f"{ShootingStar.generateRandomSStar()}")
+#     return generate_response("OK")
 
 @app.route("/add-edge", methods=["POST"])
 def add_edge():
