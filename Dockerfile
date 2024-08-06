@@ -10,4 +10,4 @@ ADD star.py ./
 RUN pip3 install flask
 ENV FLASK_APP=main.py
 RUN pip3 list
-CMD ["gunicorn", "main:main()"]
+CMD ["flask", "--app", "main", "run", "--host", "0.0.0.0"]
